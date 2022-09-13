@@ -394,4 +394,31 @@ describe("route scoring", () => {
       }).toEqual({ url, matches: [{ path, params }] })
     );
   });
+
+  test("optional dynamic params", () => {
+    let routes = [
+      {
+        path: "/nested/:one?/:two?",
+      },
+    ];
+    expect(pickPathsAndParams(routes, "/nested")).toEqual([
+      {
+        path: "/nested/:one?/:two?",
+        params: {},
+      },
+    ]);
+    expect(pickPathsAndParams(routes, "/nested/foo")).toEqual([
+      {
+        path: "/nested/:one?/:two?",
+        params: { one: "foo" },
+      },
+    ]);
+    expect(pickPathsAndParams(routes, "/nested/foo/bar")).toEqual([
+      {
+        path: "/nested/:one?/:two?",
+        params: { one: "foo", two: "bar" },
+      },
+    ]);
+    expect(pickPathsAndParams(routes, "/nested/foo/bar/baz")).toEqual(null);
+  });
 });
